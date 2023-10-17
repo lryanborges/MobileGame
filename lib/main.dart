@@ -1,8 +1,11 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'MyGame.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
   runApp(GameWidget(game: MyGame(),
     loadingBuilder: (context) {
       return Text("loading");
