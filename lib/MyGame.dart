@@ -3,10 +3,13 @@ import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/events.dart';
+import 'package:flutter/services.dart';
 import 'Enemy.dart';
+import 'Player.dart';
 
 class MyGame extends FlameGame with TapCallbacks {
 
+  late Player _player;
   late Enemy _enemy;
 
     @override
@@ -37,6 +40,9 @@ class MyGame extends FlameGame with TapCallbacks {
 
       _enemy = Enemy();
       add(_enemy);
+
+      _player = Player();
+      add(_player);
 
     }
 

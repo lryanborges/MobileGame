@@ -3,7 +3,7 @@ import 'package:flame/events.dart';
 import 'package:flame/sprite.dart';
 import 'MyGame.dart';
 
-class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGame> {
+class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGame> {
 
   bool flipped = false;
 
@@ -21,31 +21,31 @@ class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGam
   void onLoad() async {
     //sprite = await gameRef.loadSprite('person.png');
     position = gameRef.size / 2;
-    size = Vector2(96.0, 96.0);
-    scale = Vector2(-1.0, 1.0);
+    size = Vector2(128.0, 128.0);
+    scale = Vector2(1.8, 1.8);
     anchor = Anchor.center;
 
     //debugMode = true;
     idleSpriteSheet = SpriteSheet(
-      image: await gameRef.images.load('enemyRun.png'),
-      srcSize: Vector2.all(96.0),
+      image: await gameRef.images.load('playerRun.png'),
+      srcSize: Vector2.all(128.0),
     );
     hitSpriteSheet = SpriteSheet(
-      image: await gameRef.images.load('enemyAtack1.png'),
-      srcSize: Vector2.all(96.0),
+      image: await gameRef.images.load('playerRun.png'),
+      srcSize: Vector2.all(128.0),
     );
 
     idleAnimation = idleSpriteSheet.createAnimation(
-        row: 0, stepTime: 0.2, from: 0, to: 6, loop: true);
+        row: 0, stepTime: 0.2, from: 0, to: 7, loop: true);
     hitAnimation = hitSpriteSheet.createAnimation(
-        row: 0, stepTime: 0.2, from: 0, to: 3, loop: false);
+        row: 0, stepTime: 0.2, from: 0, to: 7, loop: false);
 
     //define a animação atual
     animation = idleAnimation;
     //add(RectangleHitbox(isSolid: true, size: Vector2(32,32),position: Vector2(200,200),collisionType: CollisionType.active));
 
-    position.x = 100;
-    position.y = 330;
+    position.x = 400;
+    position.y = 356;
 
     super.onLoad();
   }
@@ -71,9 +71,9 @@ class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGam
     super.update(dt);
 
     // setStates de teste
-    position.x = 200;
-    position.y = 330;
-    scale = Vector2(1.0, 1.0);
+    position.x = 400;
+    position.y = 356;
+    scale = Vector2(1.8, 1.8);
     // ------
 
     //vy += ay * dt;
