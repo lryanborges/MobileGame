@@ -47,6 +47,22 @@ class MyGame extends FlameGame with TapCallbacks {
     }
 
   @override
+  void onTapUp(TapUpEvent event) async {
+    // Do something in response to a tap event
+    //sprite = await gameRef.loadSprite('person2.png');
+    //scale = Vector2(1, -2);
+    _player.animation = _player.hitAnimation;
+    _player.size = Vector2(50.0, 50.0);
+
+    if (event.localPosition.x < size.x / 2) {
+      _player.scale = Vector2(-1.8, 1.8);
+    } else {
+      _player.scale = Vector2(1.8, 1.8);
+    }
+    print("tocou person");
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
 
