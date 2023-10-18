@@ -34,7 +34,7 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
     );
     hitSpriteSheet = SpriteSheet(
       image: await gameRef.images.load('playerAtack.png'),
-      srcSize: Vector2(84.0, 50.0),
+      srcSize: Vector2(50.0, 50.0),
     );
 
     idleAnimation = idleSpriteSheet.createAnimation(
@@ -57,7 +57,9 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
     // Do something in response to a tap event
     //sprite = await gameRef.loadSprite('person2.png');
     //scale = Vector2(1, -2);
-    //animation = hitAnimation;
+    animation = hitAnimation;
+    size = Vector2(50.0, 50.0);
+
     print("tocou person");
   }
 
@@ -73,13 +75,17 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
 
   @override
   void onCollision(Set<Vector2> points, PositionComponent other) {
-    print("oieee");
+
   }
 
   @override
   void update(double dt) {
     // TODO: implement update
     super.update(dt);
+
+    if(hitAnimation.frames.indexOf(SpriteAnimationFrame(hitSpriteSheet.getSprite(0, 13), 0.2)) == 13){
+      animation = idleAnimation;
+    }
 
     // setStates de teste
 

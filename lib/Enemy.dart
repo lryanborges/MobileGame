@@ -50,6 +50,7 @@ class Enemy extends SpriteAnimationComponent
   void onCollision(Set<Vector2> points, PositionComponent other) {
     // Ação ao colidir com outro components
     if (other is Player) {
+      vx = 0;
       animation = hitAnimation;
       totalFrames = hitAnimation.frames.length;
     }
@@ -68,8 +69,7 @@ class Enemy extends SpriteAnimationComponent
       removeFromParent();
     }
 
-    position.x = position.x + 10*dt;
-    //position.x += vx * dt;
+    position.x += vx * dt;
     //position.y += vy * dt;
   }
 }
