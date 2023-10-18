@@ -68,6 +68,7 @@ flutter:
     - assets/images/enemyAtack1.png
     - assets/images/playerRun.png
     - assets/images/playerAtack.png
+    - assets/images/arrow.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

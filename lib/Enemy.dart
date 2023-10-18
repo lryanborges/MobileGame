@@ -4,11 +4,13 @@ import 'package:flame/events.dart';
 import 'package:flame/sprite.dart';
 import 'MyGame.dart';
 import 'Player.dart';
+import 'Arrow.dart';
 
 class Enemy extends SpriteAnimationComponent
     with TapCallbacks, HasGameRef<MyGame>, HasCollisionDetection, CollisionCallbacks {
   bool flipped = false;
   int totalFrames = 0;
+  double enX = 0;
 
   double vx = 100; // m/s
   double vy = 0; // m/s
@@ -38,7 +40,7 @@ class Enemy extends SpriteAnimationComponent
 
     animation = idleAnimation;
 
-    position.x = 100;
+    position.x = enX;
     position.y = 280;
   }
 
@@ -54,6 +56,13 @@ class Enemy extends SpriteAnimationComponent
       animation = hitAnimation;
       totalFrames = hitAnimation.frames.length;
     }
+
+    if(other is Arrow){
+      gameRef.pontos++;
+      print(gameRef.pontos);
+      position.y = 10000;
+      removeFromParent();
+    }
   }
 
   @override
@@ -62,14 +71,18 @@ class Enemy extends SpriteAnimationComponent
     super.update(dt);
 
     //vy += ay * dt;
-    if (position.y - 40 >= gameRef.size.y) {
+    /*if (position.y - 40 >= gameRef.size.y) {
       ay = 0;
       vy = 0;
       gameOver = true;
       removeFromParent();
-    }
+    }*/
 
-    position.x += vx * dt;
+    if(enX < gameRef.size.x / 2){
+      position.x += vx * dt;
+    } else {
+      position.x += -vx * dt;
+    }
     //position.y += vy * dt;
   }
 }
