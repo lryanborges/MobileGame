@@ -1,15 +1,18 @@
 import 'package:flame/components.dart';
+import 'package:flame/collisions.dart';
 import 'package:flame/events.dart';
 import 'package:flame/sprite.dart';
 import 'MyGame.dart';
+import 'Player.dart';
 
-class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGame> {
-
+class Enemy extends SpriteAnimationComponent
+    with TapCallbacks, HasGameRef<MyGame>, HasCollisionDetection, CollisionCallbacks {
   bool flipped = false;
+  int totalFrames = 0;
 
-  double vx = 0; //m/s
-  double vy = 0; //m/s
-  double ax = 0;
+  double vx = 100; // m/s
+  double vy = 0; // m/s
+  double ax = 20;
   double ay = 600;
 
   late SpriteSheet idleSpriteSheet, hitSpriteSheet;
@@ -18,14 +21,8 @@ class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGam
   bool gameOver = false;
 
   @override
-  void onLoad() async {
-    //sprite = await gameRef.loadSprite('person.png');
-    position = gameRef.size / 2;
-    size = Vector2(96.0, 96.0);
-    scale = Vector2(-1.0, 1.0);
-    anchor = Anchor.center;
-
-    //debugMode = true;
+  Future<void> onLoad() async {
+    // Carrega as imagens para as animações
     idleSpriteSheet = SpriteSheet(
       image: await gameRef.images.load('enemyRun.png'),
       srcSize: Vector2.all(96.0),
@@ -35,57 +32,44 @@ class Enemy extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGam
       srcSize: Vector2.all(96.0),
     );
 
-    idleAnimation = idleSpriteSheet.createAnimation(
-        row: 0, stepTime: 0.2, from: 0, to: 6, loop: true);
-    hitAnimation = hitSpriteSheet.createAnimation(
-        row: 0, stepTime: 0.2, from: 0, to: 3, loop: false);
+    // Cria as animações
+    idleAnimation = idleSpriteSheet.createAnimation(row: 0, stepTime: 0.2, from: 0, to: 6, loop: true);
+    hitAnimation = hitSpriteSheet.createAnimation(row: 0, stepTime: 0.2, from: 0, to: 3, loop: false);
 
-    //define a animação atual
     animation = idleAnimation;
-    //add(RectangleHitbox(isSolid: true, size: Vector2(32,32),position: Vector2(200,200),collisionType: CollisionType.active));
 
     position.x = 100;
-    position.y = 330;
+    position.y = 280;
+  }
 
-    super.onLoad();
+  bool isCollidingWith(PositionComponent other) {
+    return this.toRect().overlaps(other.toRect());
   }
 
   @override
-  void onTapUp(TapUpEvent event) async {
-    // Do something in response to a tap event
-    //sprite = await gameRef.loadSprite('person2.png');
-    //scale = Vector2(1, -2);
-    //animation = hitAnimation;
-    print("tocou person");
-  }
-
-  @override
-  void onTapDown(TapDownEvent event) {
-    super.onTapDown(event);
-    //scale = Vector2(1.5, 1.5);
+  void onCollision(Set<Vector2> points, PositionComponent other) {
+    // Ação ao colidir com outro components
+    if (other is Player) {
+      animation = hitAnimation;
+      totalFrames = hitAnimation.frames.length;
+    }
   }
 
   @override
   void update(double dt) {
-    // TODO: implement update
+    // Atualizações lógicas, movimento, etc.
     super.update(dt);
 
-    // setStates de teste
-    position.x = 200;
-    position.y = 330;
-    scale = Vector2(1.0, 1.0);
-    // ------
-
     //vy += ay * dt;
-    if(position.y - 40 >= gameRef.size.y){
-      ay=0;
-      vy=0;
+    if (position.y - 40 >= gameRef.size.y) {
+      ay = 0;
+      vy = 0;
       gameOver = true;
       removeFromParent();
     }
+
+    position.x = position.x + 10*dt;
     //position.x += vx * dt;
     //position.y += vy * dt;
-
   }
-
 }

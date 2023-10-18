@@ -49,6 +49,14 @@ class MyGame extends FlameGame with TapCallbacks {
   @override
   void update(double dt) {
     super.update(dt);
+
+    if (_player.isCollidingWith(_enemy)) {
+      // Colisão entre o jogador e o inimigo ocorreu
+      // Faça algo em resposta à colisão
+      _player.onCollision(Set(), _enemy);
+      _enemy.onCollision(Set(), _player);
+    }
+
     /*if (_enemy.gameOver == true) {
       tc.text = "GAME OVER\n" + score.floor().toString() + " Pontos";
       _spike.vx = 0;
