@@ -33,7 +33,7 @@ class MyGame extends FlameGame with TapCallbacks {
     style: TextStyle(
         fontSize: 36.0,
         color: BasicPalette.white.color,
-        fontFamily: 'Poppins',
+        fontFamily: 'PixelifySans',
         fontWeight: FontWeight.bold
     ),
   );
@@ -42,7 +42,7 @@ class MyGame extends FlameGame with TapCallbacks {
     style: TextStyle(
         fontSize: 36.0,
         color: BasicPalette.black.color,
-        fontFamily: 'Poppins',
+        fontFamily: 'PixelifySans',
         fontWeight: FontWeight.bold
     ),
   );
@@ -90,7 +90,7 @@ class MyGame extends FlameGame with TapCallbacks {
         style: TextStyle(
           fontSize: 24.0,
           color: BasicPalette.black.color,
-          fontFamily: 'Poppins',
+          fontFamily: 'PixelifySans',
           fontWeight: FontWeight.bold
         ),
       );
@@ -193,6 +193,11 @@ class MyGame extends FlameGame with TapCallbacks {
 
     if(_player.gameOver == true){
       tt.text = "Game Over";
+      tt.textRenderer = tStyle;
+    }
+
+    if(pontos == 50){
+      tt.text = "You Win";
       tt.textRenderer = tStyle;
     }
 
