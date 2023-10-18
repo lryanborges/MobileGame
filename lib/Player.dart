@@ -3,19 +3,21 @@ import 'package:flame/collisions.dart';
 import 'package:flame/events.dart';
 import 'package:flame/sprite.dart';
 import 'MyGame.dart';
+import 'Enemy.dart';
 
 class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGame>, HasCollisionDetection,
     CollisionCallbacks {
 
   bool flipped = false;
+  int lifes = 5;
 
   double vx = 0; //m/s
   double vy = 0; //m/s
   double ax = 0;
   double ay = 600;
 
-  late SpriteSheet idleSpriteSheet, hitSpriteSheet;
-  late SpriteAnimation idleAnimation, hitAnimation;
+  late SpriteSheet idleSpriteSheet, hitSpriteSheet, deathSpriteSheet;
+  late SpriteAnimation idleAnimation, hitAnimation, deathAnimation;
 
   bool gameOver = false;
 
@@ -36,13 +38,18 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
       image: await gameRef.images.load('playerAtack.png'),
       srcSize: Vector2(50.0, 50.0),
     );
+    deathSpriteSheet = SpriteSheet(
+      image: await gameRef.images.load('playerDeath.png'),
+      srcSize: Vector2(50.0, 50.0),
+    );
 
     idleAnimation = idleSpriteSheet.createAnimation(
         row: 0, stepTime: 0.2, from: 0, to: 7, loop: true);
     hitAnimation = hitSpriteSheet.createAnimation(
         row: 0, stepTime: 0.2, from: 0, to: 13, loop: false);
+    deathAnimation = deathSpriteSheet.createAnimation(
+        row: 0, stepTime: 0.2, from: 0, to: 23, loop: false);
 
-    //define a animação atual
     animation = idleAnimation;
     add(RectangleHitbox(isSolid: true, size: Vector2(50,50),position: Vector2(position.x, position.y),collisionType: CollisionType.active));
 
@@ -54,9 +61,6 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
 
   @override
   void onTapUp(TapUpEvent event) async {
-    // Do something in response to a tap event
-    //sprite = await gameRef.loadSprite('person2.png');
-    //scale = Vector2(1, -2);
     animation = hitAnimation;
     size = Vector2(50.0, 50.0);
 
@@ -75,7 +79,12 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
 
   @override
   void onCollision(Set<Vector2> points, PositionComponent other) {
-
+    if(other is Enemy){
+      if(other.hit){
+        lifes--;
+        other.hit = false;
+      }
+    }
   }
 
   @override
@@ -87,14 +96,10 @@ class Player extends SpriteAnimationComponent with TapCallbacks, HasGameRef<MyGa
       animation = idleAnimation;
     }
 
-    // setStates de teste
-
-    // ------
-
-    //vy += ay * dt;
-
-    //position.x += vx * dt;
-    //position.y += vy * dt;
+    if(lifes == 0){
+      animation = deathAnimation;
+      gameOver = true;
+    }
 
   }
 

@@ -7,13 +7,16 @@ import 'Player.dart';
 import 'Arrow.dart';
 
 class Enemy extends SpriteAnimationComponent
-    with TapCallbacks, HasGameRef<MyGame>, HasCollisionDetection, CollisionCallbacks {
+    with HasGameRef<MyGame>, HasCollisionDetection, CollisionCallbacks {
   bool flipped = false;
   int totalFrames = 0;
   double enX = 0;
+  bool hit = true;
+  bool move = true;
+  int end = 0;
 
-  double vx = 100; // m/s
-  double vy = 0; // m/s
+  double vx = 100;
+  double vy = 0;
   double ax = 20;
   double ay = 600;
 
@@ -24,7 +27,6 @@ class Enemy extends SpriteAnimationComponent
 
   @override
   Future<void> onLoad() async {
-    // Carrega as imagens para as animações
     idleSpriteSheet = SpriteSheet(
       image: await gameRef.images.load('enemyRun.png'),
       srcSize: Vector2.all(96.0),
@@ -34,9 +36,8 @@ class Enemy extends SpriteAnimationComponent
       srcSize: Vector2.all(96.0),
     );
 
-    // Cria as animações
     idleAnimation = idleSpriteSheet.createAnimation(row: 0, stepTime: 0.2, from: 0, to: 6, loop: true);
-    hitAnimation = hitSpriteSheet.createAnimation(row: 0, stepTime: 0.2, from: 0, to: 3, loop: false);
+    hitAnimation = hitSpriteSheet.createAnimation(row: 0, stepTime: 0.2, from: 0, to: 3, loop: true);
 
     animation = idleAnimation;
 
@@ -50,8 +51,16 @@ class Enemy extends SpriteAnimationComponent
 
   @override
   void onCollision(Set<Vector2> points, PositionComponent other) {
-    // Ação ao colidir com outro components
     if (other is Player) {
+      if(move){
+        if(other.position.x < position.x){
+          position.x = position.x - 25;
+        } else {
+          position.x = position.x + 25;
+        }
+        move = false;
+      }
+
       vx = 0;
       animation = hitAnimation;
       totalFrames = hitAnimation.frames.length;
@@ -67,22 +76,27 @@ class Enemy extends SpriteAnimationComponent
 
   @override
   void update(double dt) {
-    // Atualizações lógicas, movimento, etc.
     super.update(dt);
 
-    //vy += ay * dt;
-    /*if (position.y - 40 >= gameRef.size.y) {
-      ay = 0;
-      vy = 0;
-      gameOver = true;
-      removeFromParent();
-    }*/
+    if(gameRef.gameOver) {
+      end++;
+      if(end == 300){
+
+        vx = -100;
+        animation = idleAnimation;
+        if(enX < gameRef.size.x / 2){
+          scale = Vector2(-1.0, 1.0);
+        } else {
+          scale = Vector2(1.0, 1.0);
+        }
+      }
+    }
 
     if(enX < gameRef.size.x / 2){
       position.x += vx * dt;
     } else {
       position.x += -vx * dt;
     }
-    //position.y += vy * dt;
+
   }
 }
